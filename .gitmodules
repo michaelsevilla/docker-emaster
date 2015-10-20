@@ -1,0 +1,3 @@
+[submodule "teuthology"]
+	path = teuthology
+	url = https://github.com/ceph/teuthology.git
