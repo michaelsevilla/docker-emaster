@@ -9,9 +9,6 @@ To start launch an experiment master command prompt:
     docker run -it \
     --name="emaster" \
     --hostname="experiment_master" \
-    --volume="$(dirname `pwd`):/hathisar-dev/" \
-    --volume="/tmp/:/tmp/" \
-    --workdir="/hathisar-dev/experiments" \
     michaelsevilla/emaster \
     /bin/bash
 
