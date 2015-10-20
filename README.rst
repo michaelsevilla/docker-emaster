@@ -3,4 +3,15 @@ Wraps a given Tachyon codebase in a container that can be seen as a Tachyon remo
 ===================================================
 Quickstart
 ===================================================
- 
+
+To start launch an experiment master command prompt:
+
+    docker run -it \
+    --name="emaster" \
+    --hostname="experiment_master" \
+    --volume="$(dirname `pwd`):/hathisar-dev/" \
+    --volume="/tmp/:/tmp/" \
+    --workdir="/hathisar-dev/experiments" \
+    michaelsevilla/emaster \
+    /bin/bash
+
