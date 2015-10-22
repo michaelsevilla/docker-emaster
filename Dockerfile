@@ -9,11 +9,14 @@ RUN echo "===> Adding Ansible's PPA..."  && \
     echo "deb-src http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/ansible.list    && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7BB9C367
 
+ENV CEPH_VERSION hammer
+RUN echo "===> Install ceph version ${CEPH_VERSION}" && \
+    echo deb http://download.ceph.com/debian-${CEPH_VERSION}/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
 
 RUN echo "===> Installing experiment master stuff..."  && \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -yq \
-        ansible wget vim git \
+    apt-get install -yq --force-yes \
+        ceph ansible wget vim git \
         python-dev python-pip python-virtualenv python-libvirt \
         libevent-dev libssl-dev libmysqlclient-dev libffi-dev && \
     sudo apt-get clean && sudo rm -rf \
