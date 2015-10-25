@@ -11,14 +11,18 @@ RUN echo "===> Adding Ansible's PPA..."  && \
 
 ENV CEPH_VERSION hammer
 RUN echo "===> Install ceph version ${CEPH_VERSION}" && \
-    echo deb http://download.ceph.com/debian-${CEPH_VERSION}/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list
+    echo deb http://download.ceph.com/debian-${CEPH_VERSION}/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list &&\
+    sudo apt-get install -y wget && \
+    wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | sudo apt-key add -
 
 RUN echo "===> Installing experiment master stuff..."  && \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -yq --force-yes \
-        ceph ansible wget vim git \
+        ceph ansible vim git \
         python-dev python-pip python-virtualenv python-libvirt \
         libevent-dev libssl-dev libmysqlclient-dev libffi-dev && \
+    apt-get download ceph-deploy && \
+    dpkg -i --force-overwrite ceph-deploy* && \
     sudo apt-get clean && sudo rm -rf \
         /var/lib/apt/lists/* /etc/apt/sources.list.d/ansible.list \
         tmp/* /var/tmp/*
@@ -32,6 +36,3 @@ RUN echo "===> Setup teuthology..." && \
     cd /teuthology  && ./bootstrap
 ENV PATH "$PATH:/teuthology/virtualenv/bin"
 
-# default command: display Ansible version
-CMD [ "ansible-playbook", "--version" ]
-CMD [ "teuthology", "--version" ]
