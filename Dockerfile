@@ -1,38 +1,34 @@
 FROM ubuntu:trusty
 
-# adapted from William Yeh's version: https://hub.docker.com/r/williamyeh/ansible/builds/bupsfaeea9nxfnqu7xaj3iy/
-# adapted from Ivo Jimenez's version: https://hub.docker.com/r/ivotron/teuthology/
 MAINTAINER Michael Sevilla
+
+RUN echo "===> Install the basics..." && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+        apt-transport-https vim wget
 
 RUN echo "===> Adding Ansible's PPA..."  && \
     echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee /etc/apt/sources.list.d/ansible.list           && \
     echo "deb-src http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/ansible.list    && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7BB9C367
 
-ENV CEPH_VERSION hammer
-RUN echo "===> Install ceph version ${CEPH_VERSION}" && \
-    echo deb http://download.ceph.com/debian-${CEPH_VERSION}/ $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list &&\
-    sudo apt-get install -y wget && \
-    wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | sudo apt-key add -
+RUN echo "===> Adding Docker's PPA..." && \
+    echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" | tee -a /etc/apt/sources.list.d/docker.list && \
+    apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+    
 
 RUN echo "===> Installing experiment master stuff..."  && \
+    apt-cache policy docker-engine && \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -yq --force-yes \
-        ceph ansible vim git \
-        python-dev python-pip python-virtualenv python-libvirt \
-        libevent-dev libssl-dev libmysqlclient-dev libffi-dev && \
-    apt-get download ceph-deploy && \
-    dpkg -i --force-overwrite ceph-deploy* && \
+    apt-get install -yq --force-yes \ 
+        ansible docker-engine && \
     sudo apt-get clean && sudo rm -rf \
         /var/lib/apt/lists/* /etc/apt/sources.list.d/ansible.list \
-        tmp/* /var/tmp/*
+        tmp/* /var/tmp/* && \
+    apt-get purge lxc-docker*
 
 RUN echo "===> Adding hosts for convenience..."  && \
     echo '[local]\nlocalhost\n' > /etc/ansible/hosts && \
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
 
-ADD ./teuthology /teuthology
-RUN echo "===> Setup teuthology..." && \
-    cd /teuthology  && ./bootstrap
-ENV PATH "$PATH:/teuthology/virtualenv/bin"
-
+# for docker
+EXPOSE 2375
