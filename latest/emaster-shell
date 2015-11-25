@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# this as tutumcloud/tutum-ubuntu plus our mods for setting up X11
+
+if [ -z "$XAUTH" ]; then
+  echo "=> Didn't find any screens so you can't use the graphers"
+else
+  xauth add $XAUTH >> /dev/null 2>&1
+fi
+
+/bin/bash

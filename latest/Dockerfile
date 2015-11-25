@@ -27,19 +27,17 @@ RUN echo "===> Installing experiment master stuff..."  && \
       python-dev \
       python-setuptools\
       python-pip \
-      lttng-tools \
-      liblttng-ust-dev \
-      python3-pip \
-      python3-babeltrace \
       openjdk-7-jre && \
-    easy_install pip && pip3 install numpy && \
+    easy_install pip && \
     sudo apt-get clean && sudo rm -rf \
       /var/lib/apt/lists/* /etc/apt/sources.list.d/ansible.list \
       tmp/* /var/tmp/* && \
     apt-get purge lxc-docker*
 
 RUN echo "===> Getting graph utilities..."  && \
-    wget https://github.com/adamcrume/TailPlot/releases/download/v1.4.0/tailplot-1.4.0-jar-with-dependencies.jar
+    wget https://github.com/adamcrume/TailPlot/releases/download/v1.4.0/tailplot-1.4.0-jar-with-dependencies.jar && \
+    echo "java -Dsun.java2d.opengl=true -jar /tailplot-1.4.0-jar-with-dependencies.jar \"\$@\"" >> /bin/tailplot && \
+    chmod 750 /bin/tailplot
 
 RUN echo "===> Adding hosts for convenience..."  && \
     echo '[local]\nlocalhost\n' > /etc/ansible/hosts && \
@@ -47,3 +45,8 @@ RUN echo "===> Adding hosts for convenience..."  && \
 
 # for docker
 EXPOSE 2375
+
+# override tutom's run.sh with our own
+ADD emaster-shell /bin/emaster-shell
+RUN chmod 750 /bin/emaster-shell
+ENV PATH /bin/:$PATH
