@@ -1,6 +1,6 @@
 FROM ubuntu:trusty
 
-MAINTAINER Michael Sevilla
+MAINTAINER Michael Sevilla <mikesevilla3@gmail.com>
 
 RUN echo "===> Install the basics..." && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq \
@@ -48,5 +48,6 @@ EXPOSE 2375
 
 # override tutom's run.sh with our own
 ADD emaster-shell /bin/emaster-shell
+ADD .ansible.cfg /root/.ansible.cfg
 RUN chmod 750 /bin/emaster-shell
 ENV PATH /bin/:$PATH
