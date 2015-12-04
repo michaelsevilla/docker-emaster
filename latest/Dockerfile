@@ -4,7 +4,7 @@ MAINTAINER Michael Sevilla <mikesevilla3@gmail.com>
 
 RUN echo "===> Install the basics..." && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-      apt-transport-https vim wget software-properties-common
+      apt-transport-https vim wget software-properties-common curl
 
 RUN echo "===> Adding Ansible's PPA..."  && \
     echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee /etc/apt/sources.list.d/ansible.list           && \
