@@ -43,6 +43,9 @@ RUN echo "===> Adding hosts for convenience..."  && \
     echo '[local]\nlocalhost\n' > /etc/ansible/hosts && \
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
 
+RUN echo "===> Customize the prompt..."  && \
+    echo "export PS1=[EXPERIMENT_MASTER]\ " >> /root/.bashrc
+
 # for docker
 EXPOSE 2375
 

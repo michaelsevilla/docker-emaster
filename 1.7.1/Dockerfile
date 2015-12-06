@@ -46,6 +46,9 @@ RUN echo "===> Adding hosts for convenience..."  && \
 # for docker
 EXPOSE 2375
 
+RUN echo "===> Customize the prompt..."  && \
+    echo "export PS1=[EXPERIMENT_MASTER]\ " >> /root/.bashrc
+
 # override tutom's run.sh with our own
 ADD emaster-shell /bin/emaster-shell
 ADD .ansible.cfg /root/.ansible.cfg
