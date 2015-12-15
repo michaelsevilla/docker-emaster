@@ -47,10 +47,12 @@ RUN echo "===> Adding hosts for convenience..."  && \
 EXPOSE 2375
 
 RUN echo "===> Customize the prompt..."  && \
+    mkdir /root/callbacks && \
     echo "export PS1=[EXPERIMENT_MASTER]\ " >> /root/.bashrc
 
 # override tutom's run.sh with our own
 ADD emaster-shell /bin/emaster-shell
 ADD .ansible.cfg /root/.ansible.cfg
+ADD separate_play.py /root/callbacks/separate_play.py
 RUN chmod 750 /bin/emaster-shell
 ENV PATH /bin/:$PATH
