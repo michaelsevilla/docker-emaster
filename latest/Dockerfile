@@ -4,7 +4,7 @@ MAINTAINER Michael Sevilla <mikesevilla3@gmail.com>
 
 RUN echo "===> Install the basics..." && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-      apt-transport-https vim wget software-properties-common curl
+      apt-transport-https vim wget software-properties-common curl lynx 
 
 RUN echo "===> Adding Ansible's PPA..."  && \
     echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee /etc/apt/sources.list.d/ansible.list           && \
@@ -29,6 +29,7 @@ RUN echo "===> Installing experiment master stuff..."  && \
       python-pip \
       openjdk-7-jre && \
     easy_install pip && \
+    pip install docker-py && \
     sudo apt-get clean && sudo rm -rf \
       /var/lib/apt/lists/* /etc/apt/sources.list.d/ansible.list \
       tmp/* /var/tmp/* && \
