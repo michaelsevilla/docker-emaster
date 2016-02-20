@@ -4,7 +4,7 @@ MAINTAINER Michael Sevilla <mikesevilla3@gmail.com>
 
 RUN echo "===> Install the basics..." && \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-      apt-transport-https vim wget software-properties-common lynx
+      apt-transport-https vim wget software-properties-common curl lynx
 
 RUN echo "===> Adding Ansible's PPA..."  && \
     echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee /etc/apt/sources.list.d/ansible.list           && \
@@ -44,12 +44,12 @@ RUN echo "===> Adding hosts for convenience..."  && \
     echo '[local]\nlocalhost\n' > /etc/ansible/hosts && \
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
 
-# for docker
-EXPOSE 2375
-
 RUN echo "===> Customize the prompt..."  && \
     mkdir /root/callbacks && \
     echo "export PS1=[EXPERIMENT_MASTER]\ " >> /root/.bashrc
+
+# for docker
+EXPOSE 2375
 
 # override tutom's run.sh with our own
 ADD emaster-shell /bin/emaster-shell
