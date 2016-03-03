@@ -57,3 +57,4 @@ ADD .ansible.cfg /root/.ansible.cfg
 ADD separate_play.py /root/callbacks/separate_play.py
 RUN chmod 750 /bin/emaster-shell
 ENV PATH /bin/:$PATH
+ENV ANSIBLE_LIBRARY /infra/modules:$ANSIBLE_LIBRARY
