@@ -1,10 +1,11 @@
-FROM ubuntu:trusty
+FROM tutum/ubuntu:trusty
 
 MAINTAINER Michael Sevilla <mikesevilla3@gmail.com>
 
 RUN echo "===> Install the basics..." && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -yq \
-      apt-transport-https vim wget software-properties-common curl lynx
+    DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -yq --force-yes \ 
+      apt-transport-https vim wget software-properties-common curl lynx openssh-client openssh-server
 
 RUN echo "===> Adding Ansible's PPA..."  && \
     echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee /etc/apt/sources.list.d/ansible.list           && \
@@ -51,11 +52,23 @@ RUN echo "===> Customize the prompt..."  && \
 # for docker
 EXPOSE 2375
 
+# * modify sshd conf
+# * workaround for the way ubuntu deals with env for sudo
+# * add /ceph to PATH
+# * create expected dirs/links
+RUN sed -i "s/UsePAM.*/UsePAM yes/" /etc/ssh/sshd_config && \
+    echo "PATH=/ceph/src:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/ceph/bin" > /etc/environment && \
+    echo "alias sudo='sudo env PATH=\$PATH'" >> /etc/environment && \
+    sed -i "s/Defaults.*env_reset//" /etc/sudoers && \
+    sed -i "s/Defaults.*secure_path.*//" /etc/sudoers
+
 # override tutom's run.sh with our own
-ADD emaster-shell /bin/emaster-shell
 ADD .ansible.cfg /root/.ansible.cfg
 ADD separate_play.py /root/callbacks/separate_play.py
 
-RUN chmod 750 /bin/emaster-shell
 ENV PATH /bin/:$PATH
 ENV ANSIBLE_LIBRARY /infra/modules:$ANSIBLE_LIBRARY
+
+ADD emaster-shell /bin/emaster-shell
+RUN chmod 750 /bin/emaster-shell
+ENTRYPOINT ["bin/emaster-shell"]
