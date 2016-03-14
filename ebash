@@ -37,4 +37,7 @@ if [ -z "$SSHD_PORT" ]; then
 fi
 sed -i "s/Port.*/Port ${SSHD_PORT}/" /etc/ssh/sshd_config
 
+# customize the prompt
+echo "export PS1=[EXPERIMENT_SLAVE]\ " >> /root/.bashrc
+
 exec /usr/sbin/sshd -D

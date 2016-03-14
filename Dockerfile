@@ -5,7 +5,15 @@ MAINTAINER Michael Sevilla <mikesevilla3@gmail.com>
 RUN echo "===> Install the basics..." && \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -yq --force-yes \ 
-      apt-transport-https vim wget software-properties-common curl lynx openssh-client openssh-server
+      apt-transport-https \
+      vim \
+      wget \
+      software-properties-common \
+      curl \
+      lynx \
+      openssh-client \
+      openssh-server \
+      python-lxml
 
 RUN echo "===> Adding Ansible's PPA..."  && \
     echo "deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" | tee /etc/apt/sources.list.d/ansible.list           && \
@@ -45,9 +53,8 @@ RUN echo "===> Adding hosts for convenience..."  && \
     echo '[local]\nlocalhost\n' > /etc/ansible/hosts && \
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
 
-RUN echo "===> Customize the prompt..."  && \
-    mkdir /root/callbacks && \
-    echo "export PS1=[EXPERIMENT_MASTER]\ " >> /root/.bashrc
+RUN echo "===> Customize the environment..."  && \
+    mkdir /root/callbacks 
 
 # for docker
 EXPOSE 2375
@@ -69,6 +76,6 @@ ADD separate_play.py /root/callbacks/separate_play.py
 ENV PATH /bin/:$PATH
 ENV ANSIBLE_LIBRARY /infra/modules:$ANSIBLE_LIBRARY
 
-ADD emaster-shell /bin/emaster-shell
-RUN chmod 750 /bin/emaster-shell
-ENTRYPOINT ["bin/emaster-shell"]
+ADD ebash /bin/ebash
+RUN chmod 750 /bin/ebash
+ENTRYPOINT ["/bin/ebash"]
