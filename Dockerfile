@@ -24,7 +24,7 @@ RUN echo "===> Installing experiment master stuff..."  && \
     DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -yq --force-yes \ 
       ansible \
-      docker-engine=1.7.1-0~trusty \
+      docker-engine \
       python-dev \
       python-setuptools\
       python-pip \
