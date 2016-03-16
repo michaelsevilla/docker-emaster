@@ -39,5 +39,6 @@ sed -i "s/Port.*/Port ${SSHD_PORT}/" /etc/ssh/sshd_config
 
 # customize the prompt
 echo "export PS1=[EXPERIMENT_SLAVE]\ " >> /root/.bashrc
+echo "PORT 2223" >> /etc/ssh/ssh_config
 
 exec /usr/sbin/sshd -D
